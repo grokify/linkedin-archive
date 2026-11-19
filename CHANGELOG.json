@@ -1,0 +1,132 @@
+{
+  "irVersion": "1.0",
+  "project": "linkedin-archive",
+  "repository": "https://github.com/grokify/linkedin-archive",
+  "versioning": "semver",
+  "commitConvention": "conventional",
+  "maintainers": [
+    "grokify"
+  ],
+  "releases": [
+    {
+      "version": "v0.1.0",
+      "date": "2026-11-19",
+      "commit": "f1d2e13",
+      "highlights": [
+        {
+          "description": "Import LinkedIn data export archives (zip or extracted folder) into SQLite or PostgreSQL; repeat imports are safe and newer exports add only new records"
+        },
+        {
+          "description": "Full-text search over every message across Inbox, Archive and Spam, with phrases, `OR`, exclusion, prefixes and grouping on both databases"
+        }
+      ],
+      "added": [
+        {
+          "description": "`archive` package: open exports from a zip or folder, read CSV files by header name, skip preamble notes, strip byte-order marks, suffix repeated headers, and parse the export's date formats",
+          "commit": "02e73dd",
+          "rmis": [
+            "RMI-LIARCHIVE-001"
+          ]
+        },
+        {
+          "description": "Typed readers for messages (including `*_messages.csv` files), connections, invitations and saved items, with HTML-to-text conversion and stable content-hash keys for messages",
+          "commit": "02e73dd",
+          "rmis": [
+            "RMI-LIARCHIVE-001"
+          ]
+        },
+        {
+          "description": "Ent schema for import runs, people, connections, conversations, messages, invitations, saved items and raw records, with first-seen and last-seen import tracking",
+          "commit": "874d218",
+          "rmis": [
+            "RMI-LIARCHIVE-002"
+          ]
+        },
+        {
+          "description": "`store` package: open SQLite (`sqlite:<path>`, pure-Go driver) or PostgreSQL (`postgres://…`) by DSN and migrate the schema",
+          "commit": "7ec4cd8",
+          "rmis": [
+            "RMI-LIARCHIVE-002"
+          ]
+        },
+        {
+          "description": "`importer` package: idempotent import keyed by archive content hash; existing records are matched by natural key and only have their last-seen import and folder updated",
+          "commit": "d2f4201",
+          "rmis": [
+            "RMI-LIARCHIVE-003"
+          ]
+        },
+        {
+          "description": "Files without a typed table are preserved row by row in `raw_records`, so no export data is lost",
+          "commit": "d2f4201",
+          "rmis": [
+            "RMI-LIARCHIVE-003"
+          ]
+        },
+        {
+          "description": "Saved items from Complete exports, mapped by header name with unrecognized columns kept in `extra`",
+          "commit": "d2f4201",
+          "rmis": [
+            "RMI-LIARCHIVE-006"
+          ]
+        },
+        {
+          "description": "`search` packages: portable query syntax, SQLite FTS5 search with stemming kept in sync by triggers, and PostgreSQL full-text search with a GIN index and fully parameterized queries",
+          "commit": "f06c4ac",
+          "rmis": [
+            "RMI-LIARCHIVE-004"
+          ]
+        },
+        {
+          "description": "`liarchive` CLI with `import`, `search` (`--from`, `--folder`, `--since`, `--until`, `--limit`, `--full`, `--json`), `imports`, `stats` and `saved` commands",
+          "commit": "6691ce9",
+          "rmis": [
+            "RMI-LIARCHIVE-005",
+            "RMI-LIARCHIVE-006"
+          ]
+        }
+      ],
+      "knownIssues": [
+        {
+          "description": "Saved-item column names have not yet been confirmed against a real Complete export; unrecognized columns are kept in `saved_items.extra`"
+        },
+        {
+          "description": "Posts, comments and reactions from Complete exports are stored only as raw records"
+        },
+        {
+          "description": "Timestamps without a time zone, such as invitation dates, are treated as UTC"
+        }
+      ],
+      "documentation": [
+        {
+          "description": "PRD, TRD, plan and roadmap specifications",
+          "commit": "2d9ee3e"
+        },
+        {
+          "description": "README with usage, search syntax and library overview",
+          "commit": "1d138bc"
+        },
+        {
+          "description": "MkDocs site with guides for installation, exporting, importing, searching, databases, SQL queries and the Go library",
+          "commit": "ed00192"
+        },
+        {
+          "description": "v0.1.0 release notes",
+          "commit": "f1d2e13"
+        }
+      ],
+      "tests": [
+        {
+          "description": "Synthetic export fixtures and end-to-end import and search tests on in-memory SQLite, with an optional PostgreSQL run via `LIARCHIVE_TEST_POSTGRES_DSN`",
+          "commit": "e206703"
+        }
+      ],
+      "infrastructure": [
+        {
+          "description": "GitHub Actions workflows for build and test, golangci-lint and CodeQL",
+          "commit": "b75401d"
+        }
+      ]
+    }
+  ]
+}
