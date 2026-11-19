@@ -1,0 +1,12 @@
+# Local databases and exports contain personal data
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.zip
+*LinkedInDataExport*/
+
+# Build output
+/liarchive
+/dist/
+coverage.out
