@@ -142,10 +142,11 @@ func newSearchCmd(o *rootOpts) *cobra.Command {
 		Long: `Full-text search messages across all folders.
 
 Query syntax: words are ANDed; "quoted phrases"; OR between terms;
--word to exclude; word* for prefix matches (SQLite only).
+-word to exclude; word* for prefix matches; (parentheses) to group.
+AND binds tighter than OR.
 
 Examples:
-  liarchive search 'equity OR shares OR stock' --since 2025-01-01
+  liarchive search 'acme (equity OR shares OR stock)' --since 2025-01-01
   liarchive search '"secondary sale"' --folder ARCHIVE
   liarchive search --from "Jane Doe"`,
 		RunE: func(cmd *cobra.Command, args []string) error {
