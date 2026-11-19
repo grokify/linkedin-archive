@@ -36,6 +36,13 @@ it arrives: re-importing is a no-op and newer exports add only new records.
 - Library-first: the CLI is a thin layer over importable Go packages
 - Runs locally with no network access; SQLite by default, PostgreSQL optional
 
+## Documentation
+
+The [documentation site](https://grokify.github.io/linkedin-archive/) has
+user guides for exporting, importing, searching, databases, SQL queries and
+the Go library, plus [release notes](docs/releases/v0.1.0.md). The sources
+are in [`docs/`](docs/); preview locally with `mkdocs serve`.
+
 ## Install
 
 ```bash

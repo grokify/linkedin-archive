@@ -1,0 +1,67 @@
+site_name: LinkedIn Archive
+site_description: Turn LinkedIn data export archives into a searchable database
+site_url: https://grokify.github.io/linkedin-archive/
+repo_url: https://github.com/grokify/linkedin-archive
+repo_name: grokify/linkedin-archive
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - content.code.copy
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - tables
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Guides:
+      - Installation: guides/installation.md
+      - Exporting Your LinkedIn Data: guides/exporting.md
+      - Importing: guides/importing.md
+      - Searching Messages: guides/searching.md
+      - Databases: guides/databases.md
+      - Data Model and SQL: guides/data-model.md
+      - Go Library: guides/library.md
+  - Specifications:
+      - PRD: specs/PRD.md
+      - TRD: specs/TRD.md
+      - Plan: specs/PLAN.md
+      - Roadmap: specs/ROADMAP.md
+  - Releases:
+      - v0.1.0: releases/v0.1.0.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/grokify/linkedin-archive
