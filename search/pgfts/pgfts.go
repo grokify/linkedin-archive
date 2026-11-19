@@ -17,8 +17,15 @@ import (
 )
 
 const (
-	config   = "english"
+	config = "english"
+
+	// document is the searchable text of a message aliased as m. It must
+	// match indexDocument (minus the alias) for PostgreSQL to use the index.
 	document = `to_tsvector('english', coalesce(m.subject, '') || ' ' || coalesce(m.body_text, '') || ' ' || coalesce(m.from_name, ''))`
+
+	indexDocument = `to_tsvector('english', coalesce(subject, '') || ' ' || coalesce(body_text, '') || ' ' || coalesce(from_name, ''))`
+
+	createIndexSQL = `CREATE INDEX IF NOT EXISTS messages_fts_idx ON messages USING GIN (` + indexDocument + `)`
 )
 
 // Searcher searches messages in a PostgreSQL database.
@@ -28,9 +35,7 @@ type Searcher struct {
 
 // New returns a Searcher, creating the full-text index if needed.
 func New(ctx context.Context, db *sql.DB) (*Searcher, error) {
-	idx := `CREATE INDEX IF NOT EXISTS messages_fts_idx ON messages USING GIN (` +
-		strings.ReplaceAll(document, "m.", "") + `)`
-	if _, err := db.ExecContext(ctx, idx); err != nil {
+	if _, err := db.ExecContext(ctx, createIndexSQL); err != nil {
 		return nil, fmt.Errorf("create fts index: %w", err)
 	}
 	return &Searcher{db: db}, nil
@@ -80,7 +85,9 @@ func (s *Searcher) Search(ctx context.Context, q search.Query) (out []search.Res
 	if len(where) > 0 {
 		stmt += " WHERE " + strings.Join(where, " AND ")
 	}
-	stmt += " ORDER BY " + order + " LIMIT " + arg(q.EffectiveLimit())
+	// Every fragment above is a constant or a generated $n placeholder; all
+	// user input is bound through arg.
+	stmt += " ORDER BY " + order + " LIMIT " + arg(q.EffectiveLimit()) //nolint:gosec // G202: Dynamic clauses are constant fragments; all user values are bound parameters
 
 	rows, err := s.db.QueryContext(ctx, stmt, args...)
 	if err != nil {

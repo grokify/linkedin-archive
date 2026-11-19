@@ -2,6 +2,7 @@ package pgfts
 
 import (
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/grokify/linkedin-archive/search"
@@ -29,5 +30,11 @@ func TestToTSQuery(t *testing.T) {
 		if args[i] != a {
 			t.Errorf("arg %d = %v, want %v", i, args[i], a)
 		}
+	}
+}
+
+func TestIndexDocumentMatchesQueryDocument(t *testing.T) {
+	if got := strings.ReplaceAll(document, "m.", ""); got != indexDocument {
+		t.Errorf("index expression drifted from query expression:\n%s\n%s", got, indexDocument)
 	}
 }
