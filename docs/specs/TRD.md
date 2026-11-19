@@ -29,10 +29,14 @@ is engine-specific and lives in separate packages behind the
 `search.Searcher` interface:
 
 - **SQLite:** an FTS5 external-content table `message_fts` over
-  `messages(subject, body_text, from_name)`, rebuilt after each import.
+  `messages(subject, body_text, from_name)` with the `porter unicode61`
+  tokenizer (stemming, diacritics folded). Insert/update/delete triggers keep
+  it in sync; it is built from existing rows when first created.
 - **PostgreSQL:** a GIN expression index on
-  `to_tsvector('simple', subject || ' ' || body_text || ' ' || from_name)`,
-  queried with `websearch_to_tsquery`.
+  `to_tsvector('english', subject || ' ' || body_text || ' ' || from_name)`.
+  Queries combine `plainto_tsquery`, `phraseto_tsquery` and prefix
+  `to_tsquery` values with `&&`, `||` and `!!`, binding every user term as a
+  parameter.
 
 DSN format:
 
@@ -73,11 +77,12 @@ Exports use many formats. A shared parser tries, in order:
 ## Data model (Ent)
 
 All imported entities carry `first_seen_import_id` and
-`last_seen_import_id` edges/fields to support snapshot diffing.
+`last_seen_import_id` fields to support snapshot diffing. (The import entity
+is named `ImportRun` because `import` is a Go keyword.)
 
 | Entity | Natural key | Notes |
 |--------|-------------|-------|
-| `Import` | `sha256` of the archive bytes (zip) or sorted file hashes (dir) | `source_name`, `export_kind` (basic/complete/unknown), `imported_at`, `files` (JSON) |
+| `ImportRun` | `sha256` of the archive bytes (zip) or sorted file hashes (dir) | `source_name`, `export_kind` (basic/complete/unknown), `imported_at`, `files` (JSON) |
 | `Person` | `key` = normalized profile URL, else `name:<lowercased name>` | `profile_url`, `name` |
 | `Connection` | person | `first_name`, `last_name`, `email`, `company`, `position`, `connected_on` |
 | `Conversation` | LinkedIn `CONVERSATION ID` | `title`, `source_file` |
@@ -107,16 +112,19 @@ confirmed against a Complete export before release.
 
 ## Import semantics
 
-1. Hash the input. If an `Import` with that hash exists, report "already
+1. Hash the input. If an `ImportRun` with that hash exists, report "already
    imported" and stop.
-2. Create the `Import` row.
+2. Create the `ImportRun` row.
 3. In one transaction per file, upsert each record by natural key:
    - New: insert with `first_seen = last_seen = this import`.
    - Existing: update `last_seen` (and mutable fields such as folder).
 4. Only files present in this export update `last_seen`, so a Basic export
    does not mark Complete-only records as removed.
 5. Rebuild the search index.
-6. Store per-file counts (`seen`, `inserted`) on the `Import`.
+6. Store per-entity counts (`seen`, `inserted`, `skipped`) on the
+   `ImportRun`. Rows with no usable identity (deactivated connections with
+   no name or URL) are counted as skipped. Identical raw rows are kept
+   distinct by occurrence index.
 
 ## Search
 
@@ -131,9 +139,9 @@ confirmed against a Complete export before release.
 | `Limit` | Max results (default 50) |
 
 Query syntax (portable across engines): bare words are ANDed, `"quoted
-phrases"`, `OR`, `-excluded`, and `prefix*`. The SQLite implementation
-translates it to FTS5; PostgreSQL uses `websearch_to_tsquery` (prefix
-matching is SQLite-only).
+phrases"`, `OR`, `-excluded`, `prefix*` and `(groups)`. AND binds tighter
+than OR, and excluded terms apply to the group they appear in. Both engines
+stem English words, so `shares` also matches `share` and `sharing`.
 
 Results include the message, conversation id/title, sender, a highlighted
 snippet and a rank.

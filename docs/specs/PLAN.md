@@ -20,10 +20,10 @@ header-driven and tolerant, then confirm it against a real Complete export.
    `go generate ./ent`.
 4. **`store` package.** `Open(ctx, dsn) (*Store, error)` returning the Ent
    client, the `*sql.DB`, and the dialect; runs `client.Schema.Create`.
-5. **`importer` package.** `Import(ctx, store, archive) (*Result, error)`
+5. **`importer` package.** `Import(ctx, client, archive) (*Result, error)`
    implementing the semantics in the TRD.
 6. **`search` packages.** Query parser, FTS5 translation, Postgres
-   implementation, and `search.New(store)` choosing by dialect.
+   implementation, and `engine.New(ctx, store)` choosing by dialect.
 7. **CLI.** Cobra commands over the library.
 8. **Tests.** Synthetic `fstest.MapFS` exports; in-memory SQLite.
 9. **Docs.** README with install, export instructions and examples.

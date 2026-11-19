@@ -6,17 +6,17 @@ Phase status is derived from the status of its RMIs.
 
 | RMI | Item | Status |
 |-----|------|--------|
-| RMI-LIARCHIVE-001 | Archive reader: zip/dir via `fs.FS`, header-driven CSV, preamble skip, date parsing | Planned |
-| RMI-LIARCHIVE-002 | Ent schema and store: SQLite and PostgreSQL DSNs, migrations | Planned |
-| RMI-LIARCHIVE-003 | Idempotent importer: imports, people, connections, conversations, messages, invitations, raw records | Planned |
-| RMI-LIARCHIVE-004 | Message full-text search: SQLite FTS5 and PostgreSQL implementations | Planned |
-| RMI-LIARCHIVE-005 | CLI: `import`, `search`, `imports`, `stats` | Planned |
+| RMI-LIARCHIVE-001 | Archive reader: zip/dir via `fs.FS`, header-driven CSV, preamble skip, date parsing | Done |
+| RMI-LIARCHIVE-002 | Ent schema and store: SQLite and PostgreSQL DSNs, migrations | Done |
+| RMI-LIARCHIVE-003 | Idempotent importer: imports, people, connections, conversations, messages, invitations, raw records | Done |
+| RMI-LIARCHIVE-004 | Message full-text search: SQLite FTS5 and PostgreSQL implementations | Done |
+| RMI-LIARCHIVE-005 | CLI: `import`, `search`, `imports`, `stats` | Done |
 
 ## Phase 2: Complete export coverage
 
 | RMI | Item | Status |
 |-----|------|--------|
-| RMI-LIARCHIVE-006 | Saved items entity and `saved` command | Planned |
+| RMI-LIARCHIVE-006 | Saved items entity and `saved` command | Done |
 | RMI-LIARCHIVE-007 | Verify saved-item column mapping against a Complete export | Planned |
 | RMI-LIARCHIVE-008 | Posts (`Shares.csv`), comments and reactions entities with search | Planned |
 | RMI-LIARCHIVE-009 | Endorsements, positions and profile entities | Planned |
