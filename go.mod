@@ -6,7 +6,7 @@ require (
 	entgo.io/ent v0.14.6
 	github.com/jackc/pgx/v5 v5.13.0
 	github.com/spf13/cobra v1.10.2
-	modernc.org/sqlite v1.62.0
+	modernc.org/sqlite v1.63.0
 )
 
 require (
